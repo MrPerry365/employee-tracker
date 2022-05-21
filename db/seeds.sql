@@ -1,2 +1,5 @@
 INSERT INTO department (name),
-(accounting),
+(finance), (management), (sales), (marketing)
+
+
+INSERT INTO role (title, salary, department_id), 
