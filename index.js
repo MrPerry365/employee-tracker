@@ -39,10 +39,18 @@ db.connect(allDepartments(err)) {
     if (err) throw err;
     console.log(result);
   })
-}
+};
 
 // make a function for view all roles //
 // when chosen show, job title, role id, the department that role belongs to, and the salary for that role //
+
+db.connect(allRoles(err)) {
+  if (err) throw err;
+  db.connect("SELECT title, salary, role id FROM role", function (err, result, fields) {
+    if (err) throw err;
+    console.log(result);
+  })
+};
 
 // make a function for view all employees //
 // when chosen show, a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to //
@@ -53,10 +61,11 @@ db.connect(allEmployees(err)) {
     if (err) throw err;
     console.log(result);
   })
-}
+};
 
 // make a function for add a department //
 //  when chosen show, a prompt to enter the name of the department and then that department is added to the database //
+// - make a function to INSERT new department //
 
 function addDepartment() {
   inquirer.prompt({
@@ -68,6 +77,7 @@ function addDepartment() {
 
 // make a function for add a role //
 // when chosen show, a prompt to enter the name, salary, and department for the role and that role is added to the database //
+// - make a function for INSERT a role //
 
 function addRole() {
   inquirer.prompt([
@@ -91,10 +101,53 @@ function addRole() {
 
 // make a function for add an employee //
 // when chosen, show a prompt to enter the employee’s first name, last name, role, and manager, and that employee is added to the database //
+// - make a function to INSERT an employee //
+
+function addEmployee() {
+  inquirer.prompt([
+    {
+    type:"input",
+    name:'first_name',
+    message:'What is the first name of the employee?'
+    },
+    {
+      type:"input",
+      name:"last_name",
+      message:"What is the last name of the employee?",
+    },
+    {
+      type:"input",
+      name:"role",
+      message:"What is role of the employee?",
+    },
+    {
+      type:"input",
+      name:"manager",
+      message:"What is the name of the employees manager?",
+    },
+  ])
+};
+
 
 
 // make a function for update an employee role //
 // when chosen show,a prompt to select an employee to update and their new role and this information is updated in the database //
+
+function updateEmployeeRole () {
+  inquirer.prompt([
+    {
+      type:"input",
+      name:"employeeRole",
+      message:"Which employees role would you like to update?"
+     
+    },
+    {
+      type:"input",
+      name:"employeeRole",
+      message:"What role should the employee now have?"
+    }
+  ])
+}
 
 
 
