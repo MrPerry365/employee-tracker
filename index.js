@@ -29,43 +29,104 @@ function initial_prompt() {
 })
 };
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 // make a function to direct the user to the choice //
 
 // make function for view all department//
 //when chosen show department names and ids //
 // https://www.w3schools.com/nodejs/nodejs_mysql_select.asp  -- Node.js MySQL Select From reference //
-db.connect(allDepartments(err) {
-  if (err) throw err;
-  db.connect("SELECT name, id FROM department", function (err, result, fields) {
-    if (err) throw err;
-    console.log(result);
-    console.log(fields);
+
+
+// db.connect(allDepartments(err) {
+//   if (err) throw err;
+//   db.connect("SELECT name, id FROM department", function (err, result, fields) {
+//     if (err) throw err;
+//     console.log(result);
+//     console.log(fields);
+//   });
+// });
+
+
+// Get all departments
+app.get('/api/department', (req, res) => {
+  const sql = `SELECT name, id FROM department`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: rows
+    });
   });
 });
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // make a function for view all roles //
 // when chosen show, job title, role id, the department that role belongs to, and the salary for that role //
 
-db.connect(allRoles(err) {
-  if (err) throw err;
-  db.connect("SELECT title, salary, role id FROM role", function (err, result, fields) {
-    if (err) throw err;
-    console.log(result);
-    console.log(fields);
+// db.connect(allRoles(err) {
+//   if (err) throw err;
+//   db.connect("SELECT title, salary, role id FROM role", function (err, result, fields) {
+//     if (err) throw err;
+//     console.log(result);
+//     console.log(fields);
+//   });
+// });
+
+// Get all roles
+app.get('/api/role', (req, res) => {
+  const sql = `SELECT title, salary, role id FROM role`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: rows
+    });
   });
 });
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 // make a function for view all employees //
 // when chosen show, a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to //
 
-db.connect(allEmployees(err) {
-  if (err) throw err;
-  db.query("SELECT * FROM employee", function (err, result, fields) {
-    if (err) throw err;
-    console.log(result);
-    console.log(fields);
+// db.connect(allEmployees(err) {
+//   if (err) throw err;
+//   db.query("SELECT * FROM employee", function (err, result, fields) {
+//     if (err) throw err;
+//     console.log(result);
+//     console.log(fields);
+//   });
+// });
+
+// Get all employee
+app.get('/api/employee', (req, res) => {
+  const sql = `SELECT * FROM employee`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: rows
+    });
   });
 });
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 // make a function for add a department //
 //  when chosen show, a prompt to enter the name of the department and then that department is added to the database //
@@ -151,7 +212,7 @@ function updateEmployeeRole () {
       message:"What role should the employee now have?"
     }
   ])
-}
+};
 
 
 
