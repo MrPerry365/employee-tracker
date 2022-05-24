@@ -1,42 +1,74 @@
-const mysql = require('mysql2');
-const cTable = require('console.table');
-const inquirer = require('inquirer');
+const mysql = require("mysql2");
+const cTable = require("console.table");
+const inquirer = require("inquirer");
+const { CLIENT_FOUND_ROWS } = require("mysql/lib/protocol/constants/client");
 
 // Connect to database
 const db = mysql.createConnection(
-    {
-      host: 'localhost',
-      user: 'root',
-      password: 'password',
-      database: 'employee_tracker_db'
-    },
-    console.log('Connected to the employee_tracker_db database.')
-  );
-
-// cli prompts for user input //
-const initial_prompt = 
+  {
+    host: "localhost",
+    user: "root",
+    password: "covidsux2020",
+    database: "employee_tracker_db",
+  },
+  console.log("Connected to the employee_tracker_db database.")
+);
 
 // initial prompt //
 
-function initial_prompt() {
-  inquirer.prompt({
-  type:'list',
-  name:'initial_prompt',
-  message:"These are your choices. Please select one.",
-  choices:[
-    'view all departments', 'view all roles', 'view all employees','add a department', "add a role", "add an employee", 'update an employee role'
-  ]
-})
-};
+function initialPrompt() {
+  inquirer
+    .prompt({
+      type: "list",
+      name: "initial_prompt",
+      message: "These are your choices. Please select one.",
+      choices: [
+        "view all departments",
+        "view all roles",
+        "view all employees",
+        "add a department",
+        "add a role",
+        "add an employee",
+        "update an employee role",
+      ],
+    })
+    .then((answer) => {
+      if (answer.initial_prompt === "view all departments") {
+        viewAllDepartments();
+      } else if (answer.initial_prompt === "view all roles") {
+        viewAllRoles();
+      } else if (answer.initial_prompt === "view all employees") {
+        viewAllEmployees();
+      } else if (answer.initial_prompt === "add a department") {
+        addDepartment();
+      } else if (answer.initial_prompt === "add a role") {
+        addRole();
+      } else if (answer.initial_prompt === "add an employee") {
+        addEmployee();
+      } else if (answer.initial_prompt === "update an employee role") {
+        updateEmployeeRole();
+      }
+    });
+}
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // make a function to direct the user to the choice //
 
 // make function for view all department//
+function viewAllDepartments() {
+  const sql = `SELECT * FROM role`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    console.table(rows);
+    initialPrompt();
+  });
+}
 //when chosen show department names and ids //
 // https://www.w3schools.com/nodejs/nodejs_mysql_select.asp  -- Node.js MySQL Select From reference //
-
 
 // db.connect(allDepartments(err) {
 //   if (err) throw err;
@@ -46,23 +78,6 @@ function initial_prompt() {
 //     console.log(fields);
 //   });
 // });
-
-
-// Get all departments
-app.get('/api/department', (req, res) => {
-  const sql = `SELECT name, id FROM department`;
-
-  db.query(sql, (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: 'success',
-      data: rows
-    });
-  });
-});
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -79,23 +94,8 @@ app.get('/api/department', (req, res) => {
 // });
 
 // Get all roles
-app.get('/api/role', (req, res) => {
-  const sql = `SELECT title, salary, role id FROM role`;
-
-  db.query(sql, (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: 'success',
-      data: rows
-    });
-  });
-});
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 // make a function for view all employees //
 // when chosen show, a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to //
@@ -110,23 +110,8 @@ app.get('/api/role', (req, res) => {
 // });
 
 // Get all employee
-app.get('/api/employee', (req, res) => {
-  const sql = `SELECT * FROM employee`;
-
-  db.query(sql, (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: 'success',
-      data: rows
-    });
-  });
-});
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 // make a function for add a department //
 //  when chosen show, a prompt to enter the name of the department and then that department is added to the database //
@@ -134,11 +119,11 @@ app.get('/api/employee', (req, res) => {
 
 function addDepartment() {
   inquirer.prompt({
-    type:'input',
-    name:'departmentName',
-    message:'What is the name of the new department?'
-})
-};
+    type: "input",
+    name: "departmentName",
+    message: "What is the name of the new department?",
+  });
+}
 
 // make a function for add a role //
 // when chosen show, a prompt to enter the name, salary, and department for the role and that role is added to the database //
@@ -147,22 +132,22 @@ function addDepartment() {
 function addRole() {
   inquirer.prompt([
     {
-    type:"input",
-    name:'role',
-    message:'What is the name of the role?'
+      type: "input",
+      name: "role",
+      message: "What is the name of the role?",
     },
     {
-      type:"input",
-      name:"salary",
-      message:"What is the salary of the role?",
+      type: "input",
+      name: "salary",
+      message: "What is the salary of the role?",
     },
     {
-      type:"input",
-      name:"department",
-      message:"What is the department of the role?",
-    }
-  ])
-};
+      type: "input",
+      name: "department",
+      message: "What is the department of the role?",
+    },
+  ]);
+}
 
 // make a function for add an employee //
 // when chosen, show a prompt to enter the employee’s first name, last name, role, and manager, and that employee is added to the database //
@@ -171,68 +156,43 @@ function addRole() {
 function addEmployee() {
   inquirer.prompt([
     {
-    type:"input",
-    name:'first_name',
-    message:'What is the first name of the employee?'
+      type: "input",
+      name: "first_name",
+      message: "What is the first name of the employee?",
     },
     {
-      type:"input",
-      name:"last_name",
-      message:"What is the last name of the employee?",
+      type: "input",
+      name: "last_name",
+      message: "What is the last name of the employee?",
     },
     {
-      type:"input",
-      name:"role",
-      message:"What is role of the employee?",
+      type: "input",
+      name: "role",
+      message: "What is role of the employee?",
     },
     {
-      type:"input",
-      name:"manager",
-      message:"What is the name of the employees manager?",
+      type: "input",
+      name: "manager",
+      message: "What is the name of the employees manager?",
     },
-  ])
-};
-
-
+  ]);
+}
 
 // make a function for update an employee role //
 // when chosen show,a prompt to select an employee to update and their new role and this information is updated in the database //
 
-function updateEmployeeRole () {
+function updateEmployeeRole() {
   inquirer.prompt([
     {
-      type:"input",
-      name:"employeeRole",
-      message:"Which employees role would you like to update?"
-     
+      type: "input",
+      name: "employeeRole",
+      message: "Which employees role would you like to update?",
     },
     {
-      type:"input",
-      name:"employeeRole",
-      message:"What role should the employee now have?"
-    }
-  ])
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  module.exports = db;
-  
+      type: "input",
+      name: "employeeRole",
+      message: "What role should the employee now have?",
+    },
+  ]);
+}
+initialPrompt();
