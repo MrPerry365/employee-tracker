@@ -57,7 +57,7 @@ function initialPrompt() {
 
 // make function for view all department//
 function viewAllDepartments() {
-  const sql = `SELECT * FROM role`;
+  const sql = `SELECT * FROM department`;
 
   db.query(sql, (err, rows) => {
     if (err) {
@@ -84,6 +84,18 @@ function viewAllDepartments() {
 // make a function for view all roles //
 // when chosen show, job title, role id, the department that role belongs to, and the salary for that role //
 
+function viewAllRoles() {
+  const sql = `SELECT * FROM role`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    console.table(rows);
+    initialPrompt();
+  });
+}
+
 // db.connect(allRoles(err) {
 //   if (err) throw err;
 //   db.connect("SELECT title, salary, role id FROM role", function (err, result, fields) {
@@ -99,6 +111,18 @@ function viewAllDepartments() {
 
 // make a function for view all employees //
 // when chosen show, a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to //
+
+function viewAllEmployees() {
+  const sql = `SELECT * FROM employee`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    console.table(rows);
+    initialPrompt();
+  });
+}
 
 // db.connect(allEmployees(err) {
 //   if (err) throw err;
@@ -118,35 +142,96 @@ function viewAllDepartments() {
 // - make a function to INSERT new department //
 
 function addDepartment() {
-  inquirer.prompt({
-    type: "input",
-    name: "departmentName",
-    message: "What is the name of the new department?",
-  });
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "departmentName",
+        message: "What is the name of the new department?",
+      },
+    ])
+    .then((answer) => {
+      console.log(answer);
+      const sql = `INSERT INTO department (name) VALUES (?)`;
+      const params = [answer.departmentName];
+      db.query(sql, params, (err, rows) => {
+        if (err) throw err;
+        console.log("added a department");
+        initialPrompt();
+      });
+    });
 }
+
+// const sql = `INSERT INTO department (name, id) VALUES (`?`,`?`);
+// db.query(sql, function (err, result) {
+//   if (err) throw err;
+//   console.log("1 department created");
+// });
 
 // make a function for add a role //
 // when chosen show, a prompt to enter the name, salary, and department for the role and that role is added to the database //
 // - make a function for INSERT a role //
 
 function addRole() {
-  inquirer.prompt([
-    {
-      type: "input",
-      name: "role",
-      message: "What is the name of the role?",
-    },
-    {
-      type: "input",
-      name: "salary",
-      message: "What is the salary of the role?",
-    },
-    {
-      type: "input",
-      name: "department",
-      message: "What is the department of the role?",
-    },
-  ]);
+  // get list of departments from the database //
+  const sql = `SELECT * FROM department`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    // console.log(rows);
+
+    for (let index = 0; index < rows.length; index++) {
+      rows[index].value = rows[index].id;
+      delete rows[index].id;
+      console.log(rows[index]);
+    }
+
+    //  format list for inquirer //
+    // use list for department question //
+
+    // const departments = [
+    //   {
+    //     name: "department 1",
+    //     value: 1,
+    //   },
+    //   {
+    //     name: "department 2",
+    //     value: 2,
+    //   },
+    // ];
+
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "title",
+          message: "What is the title of the role?",
+        },
+        {
+          type: "input",
+          name: "salary",
+          message: "What is the salary of the role?",
+        },
+        {
+          type: "list",
+          name: "department_id",
+          message: "What is the department of the role?",
+          choices: rows,
+        },
+      ])
+      .then((answer) => {
+        console.log(answer);
+        // const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
+        // const params = [answer.addRole];
+        // db.query(sql, params, (err, rows) => {
+        //   if (err) throw err;
+        //   console.log("added a department");
+        //   initialPrompt();
+        // });
+      });
+  });
 }
 
 // make a function for add an employee //
