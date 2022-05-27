@@ -233,34 +233,59 @@ function addRole() {
       });
   });
 }
-
 // make a function for add an employee //
 // when chosen, show a prompt to enter the employee’s first name, last name, role, and manager, and that employee is added to the database //
 // - make a function to INSERT an employee //
 
 function addEmployee() {
-  inquirer.prompt([
-    {
-      type: "input",
-      name: "first_name",
-      message: "What is the first name of the employee?",
-    },
-    {
-      type: "input",
-      name: "last_name",
-      message: "What is the last name of the employee?",
-    },
-    {
-      type: "input",
-      name: "role",
-      message: "What is role of the employee?",
-    },
-    {
-      type: "input",
-      name: "manager",
-      message: "What is the name of the employees manager?",
-    },
-  ]);
+  const sql = `SELECT * FROM employee`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    // console.log(rows);
+
+    // for (let index = 0; index < rows.length; index++) {
+    //   rows[index].value = rows[index].id;
+    //   // delete rows[index].id;
+    //   console.log(rows[index]);
+    // }
+
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "first_name",
+          message: "What is the first name of the employee?",
+        },
+        {
+          type: "input",
+          name: "last_name",
+          message: "What is the last name of the employee?",
+        },
+        {
+          type: "input",
+          name: "role",
+          message: "What is role of the employee?",
+        },
+        {
+          type: "input",
+          name: "manager",
+          message: "What is the name of the employees manager?",
+        },
+      ])
+      .then((answer) => {
+        console.log(answer);
+        const sql = `INSERT INTO employee (first_name, last_name, role, manager) VALUES (?, ?, ?, ?)`;
+        const params = [answer.addEmployee];
+        db.query(sql, params, (err, rows) => {
+          if (err) throw err;
+          console.log("added an employee");
+        });
+        initialPrompt();
+      });
+  });
 }
 
 // make a function for update an employee role //

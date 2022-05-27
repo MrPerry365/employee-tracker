@@ -35,7 +35,8 @@ No other contributors
 insomnia and jest
 
 
-## Questions
+## Video demo
+/Users/thisiskyle/projects/challenge/employee-tracker/assets/Screen Recording .mov
 ### If you have any questions, contact me at:
 
 #### GitHub Username: [MrPerry365]
