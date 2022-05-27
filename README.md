@@ -36,7 +36,8 @@ insomnia and jest
 
 
 ## Video demo
-/Users/thisiskyle/projects/challenge/employee-tracker/assets/Screen Recording .mov
+https://drive.google.com/file/d/16sRVm3F9SIfLKJJ5Orlb727rKoa2meht/view
+
 ### If you have any questions, contact me at:
 
 #### GitHub Username: [MrPerry365]
